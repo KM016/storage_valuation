@@ -1,0 +1,11 @@
+vintage_year,release_date,retrieved_date,last_historical_month,first_month,last_month,workbook_filename,source_url,sha256
+2017,2017-07-11,2026-08-24,2017-06-01,2013-01-01,2018-12-01,jul17_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul17_base.xlsx,d881b0fd53887616cd8ecdd4fb389fa62ccd2832da2940ab7bca04915b17f29f
+2018,2018-07-10,2026-08-24,2018-06-01,2014-01-01,2019-12-01,jul18_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul18_base.xlsx,16030dac11eceeca4864cd5ba08ab3273f4eb32dfee5093b53662972c59607a8
+2019,2019-07-09,2026-08-24,2019-06-01,2015-01-01,2020-12-01,jul19_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul19_base.xlsx,752dd4eb7247b32f8d56abd6290030902000a78d1b57c2bcd739b43766638cda
+2020,2020-07-07,2026-08-24,2020-06-01,2016-01-01,2021-12-01,jul20_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul20_base.xlsx,c41e811ccb85d101b0cd496fe1edc1e229ca0b04cfcb71dc119ef0f2198a71fb
+2021,2021-07-07,2026-08-24,2021-06-01,2017-01-01,2022-12-01,jul21_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul21_base.xlsx,3c4d6d642a5ac70aa309fc4f7fc5309a569009095bad132a1a11cbc2d66991db
+2022,2022-07-12,2026-08-24,2022-06-01,2018-01-01,2023-12-01,jul22_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul22_base.xlsx,8555a9e9d04e80e9fec335ca36bb2ce14737a39b552a8f3e890389ee2c62d918
+2023,2023-07-11,2026-08-24,2023-06-01,2019-01-01,2024-12-01,jul23_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul23_base.xlsx,fdc949682f272ee2235e817c124362fab3b97a6634ea9389dafc5b255ddfb45a
+2024,2024-07-09,2026-08-24,2024-06-01,2020-01-01,2025-12-01,jul24_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul24_base.xlsx,066eb3d2691a4ace702483ee4a73f64c6d9899a692edb4b9171d94b986b369dd
+2025,2025-07-08,2026-08-24,2025-06-01,2021-01-01,2026-12-01,jul25_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul25_base.xlsx,4231a27728d8c6f99dda0e51796e3b7a18e39f4fdcd2edfb4d8a43eadb0e850e
+2026,2026-07-07,2026-08-24,2026-06-01,2022-01-01,2027-12-01,jul26_base.xlsx,https://www.eia.gov/outlooks/steo/archives/jul26_base.xlsx,67741610f3bb74e011a55a40d9cb571f5ea9108a96ef7d144e65519abd72f490
