@@ -1,20 +1,20 @@
 # Natural Gas Forecasting and Storage Valuation
 
-An end-to-end quantitative research project linking point-in-time natural gas forecasts with an inventory-constrained storage decision model.
+An end to end quantitative research project linking point in time natural gas forecasts with an inventory constrained storage decision model.
 
 > Personal Project<br>
 > Date: 08/2026
 
 ## Project overview
 
-This project builds on the forecasting and storage ideas I first encountered during the J.P. Morgan Quantitative Research Job Simulation. The original submissions remain unchanged. This is a separate personal project using a longer price series, archived EIA forecast vintages and a month-by-month storage model.
+This project builds on the forecasting and storage ideas I first encountered during the J.P. Morgan Quantitative Research Job Simulation. The original submissions is unchanged. This is a separate personal project using a longer price series, archived EIA forecast vintages and a month by month storage model.
 
 The research asks two questions:
 
-1. Can storage and weather forecasts available at the time improve a 12-month Henry Hub price forecast?
+1. Can storage and weather forecasts available at the time improve a 12 month Henry Hub price forecast?
 2. Does lower average price error produce a more useful storage schedule?
 
-The complete analysis is in [gas_storage_valuation.ipynb](gas_storage_valuation.ipynb). The storage output is a forecast-based decision value under stated assumptions, not an arbitrage-free price from a traded forward curve.
+The complete analysis is in [gas_storage_valuation.ipynb](gas_storage_valuation.ipynb). The storage output is a forecast based decision value under stated assumptions, not an arbitrage free price from a traded forward curve.
 
 ## Data
 
@@ -48,29 +48,29 @@ A July STEO release contains historical or estimated data through June and forec
 6. discard the first July forecast; and
 7. score the 12 months from August to July.
 
-Using the completed July price at a July forecast date would introduce one month of look-ahead leakage. Storage averages and feature scaling are also estimated from training rows only.
+Using the completed July price at a July forecast date would introduce one month of look ahead leakage. Storage averages and feature scaling are also estimated from training rows only.
 
 Seven forecast years from July 2017 to July 2023 are used for development. July 2024 and July 2025 are later evaluations, and the July 2026 vintage produces the current forecast scenarios.
 
 ## Forecasting approach
 
-The notebook uses ADF testing and ACF/PACF plots to examine the log-price level and its first two differences. On the exact point-in-time history used for the first development forecast year, the level ADF p-value is 0.525 while the first-difference p-value is approximately $1.74\times10^{-10}$. This makes first-differenced models necessary comparison candidates, but it does not select a model by itself.
+The notebook uses ADF testing and ACF/PACF plots to examine the log price level and its first two differences. On the exact point in- ime history used for the first development forecast year, the level ADF p value is 0.525 while the first difference p value is approximately $1.74\times10^{-10}$. This makes first differenced models necessary comparison candidates, but it does not select a model by itself.
 
 The model comparison includes:
 
-- last-price and seasonal-naive baselines;
+- last price and seasonal naive baselines;
 - the published EIA Henry Hub forecast;
-- price-only ARIMA and SARIMA level models;
+- price only ARIMA and SARIMA level models;
 - ARIMAX and SARIMAX level models using storage surplus, HDD and CDD;
-- a level-model sensitivity using weather deviations from normal;
-- low-order no-drift ARIMA and ARIMAX models with `d=1`; and
-- a no-drift seasonal fundamentals model with `d=1`.
+- a level model sensitivity using weather deviations from normal;
+- low order no drift ARIMA and ARIMAX models with `d=1`; and
+- a no drift seasonal fundamentals model with `d=1`.
 
-The differenced candidates have no drift because the price plot does not support a deterministic long-run trend. All statistical models use log prices. Exponentiating the central log forecast gives a conditional median dollar-price path rather than a bias-corrected expected price.
+The differenced candidates have no drift because the price plot does not support a deterministic long term trend. All statistical models use log prices. Exponentiating the central log forecast gives a conditional median dollar price path rather than a bias corrected expected price.
 
-ARIMA `(0,1,0)` without drift produces the same central forecast as carrying the latest observed price forward. I therefore retain the simpler last-price baseline rather than duplicate it as a price-only statistical model.
+ARIMA `(0,1,0)` without drift produces the same central forecast as carrying the latest observed price forward. I therefore retain the simpler last price baseline rather than duplicate it as a price only statistical model.
 
-MAE across all 84 development forecasts is the stated selection measure. RMSE, median annual MAE, interval coverage, performance by forecast year and leave-one-year-out checks are reported alongside it.
+MAE across all 84 development forecasts is the stated selection measure. RMSE, median annual MAE, interval coverage, performance by forecast year and leave one year out checks are reported alongside it.
 
 ## Forecasting results
 
@@ -89,11 +89,11 @@ MAE across all 84 development forecasts is the stated selection measure. RMSE, m
 | Last-price baseline | 1.266 | 0.483 | 2.013 | — |
 | Seasonal-naive baseline | 1.520 | 1.004 | 2.247 | — |
 
-The level ARIMAX has the lowest pooled MAE and RMSE, so it is retained under the stated selection rule. Adding an annual seasonal error term does not improve either the price-only or fundamentals model. The seasonal shape in the selected forecast instead enters through storage, HDD and CDD.
+The level ARIMAX has the lowest pooled MAE and RMSE, so it is retained under the stated selection rule. Adding an annual seasonal error term does not improve either the price only or fundamentals model. The seasonal shape in the selected forecast instead enters through storage, HDD and CDD.
 
-The differencing result is more nuanced. ARIMAX `(1,1,1)` is the strongest `d=1` model on pooled MAE, and several differenced models perform better in calmer years. The selected model remains best in six of seven leave-one-year-out checks. When the 2022 forecast year is removed, ARIMAX `(0,1,0)` with fundamentals becomes best, with MAE 0.739 compared with 0.796 for the selected model.
+The differencing result is more nuanced. ARIMAX `(1,1,1)` is the strongest `d=1` model on pooled MAE, and several differenced models perform better in calmer years. The selected model remains best in six of seven leave one year out checks. When the 2022 forecast year is removed, ARIMAX `(0,1,0)` with fundamentals becomes best, with MAE 0.739 compared with 0.796 for the selected model.
 
-The selected model also beats the last-price baseline in only four of seven individual years. Its pooled advantage is therefore partly linked to its smaller error during the 2022 reversal rather than universal year-by-year dominance.
+The selected model also beats the last price baseline in only four of seven individual years. Its pooled advantage is therefore partly linked to its smaller error during the 2022 reversal rather than universal year by year dominance.
 
 ### Later evaluations
 
@@ -117,7 +117,7 @@ The selected ARIMAX path begins at `$3.25/MMBtu` in August 2026, remains close t
 
 The selected ARIMAX, ARIMAX `(1,1,1)` and seasonal SARIMAX forecasts produce similar central price paths. Their similarity suggests that differencing and the annual seasonal term have little effect on the current central forecast. The EIA path contains a larger winter peak and is retained as an external scenario.
 
-Each statistical forecast is also shown beside a fixed 50/50 midpoint with the EIA path. These combinations are illustrative model-risk scenarios rather than forecasts selected through development testing. Only the selected-model/EIA midpoint is carried into the storage valuation.
+Each statistical forecast is also shown beside a fixed 50/50 midpoint with the EIA path. These combinations are illustrative model risk scenarios rather than forecasts selected through development testing. Only the selected-model/EIA midpoint is carried into the storage valuation.
 
 ## Storage decision model
 
@@ -183,10 +183,10 @@ At 300,000 MMBtu capacity, increasing the injection and withdrawal charge from $
 
 ## Main findings
 
-- Forecast-time storage, HDD and CDD improve pooled accuracy relative to the tested price-only models and benchmarks.
-- Explicit seasonal price-error terms do not improve the development result; the useful seasonal information enters through the forecast drivers.
-- The selected `d=0` model wins the stated pooled-MAE comparison, but `d=1` models are stronger in several calmer periods and become preferred when 2022 is removed.
-- The selected model's prediction intervals are under-calibrated.
+- Forecast time storage, HDD and CDD improve pooled accuracy relative to the tested price only models and benchmarks.
+- Explicit seasonal price error terms do not improve the development result; the useful seasonal information enters through the forecast drivers.
+- The selected `d=0` model wins the stated pooled MAE comparison, but `d=1` models are stronger in several calmer periods and become preferred when 2022 is removed.
+- The selected model's prediction intervals are under calibrated.
 - Lower average forecast error does not guarantee useful storage timing.
 - Deterministic storage value is highly sensitive to the chosen forecast curve.
 
@@ -196,7 +196,7 @@ Fourteen automated tests check:
 
 - vintage dates, status counts, consecutive months, forecast windows and required values;
 - zero activity when flat prices cannot cover costs;
-- a known two-month storage spread;
+- a known two month storage spread;
 - inventory conservation;
 - capacity and operating-rate limits;
 - agreement between discounted cash flows and reported value;
@@ -208,11 +208,11 @@ Every retained statistical fit is also checked for numerical convergence. The no
 
 ## Tools used
 
-- pandas and NumPy for time-series preparation and calculations;
+- pandas and NumPy for time series preparation and calculations;
 - Matplotlib and Seaborn for visualisation;
 - statsmodels for ADF testing and ARIMA-family models;
 - SciPy for linear storage optimisation;
-- openpyxl for the archived-workbook extraction and Excel output; and
+- openpyxl for the archived workbook extraction and Excel output; and
 - Python's `unittest` framework for data and numerical checks.
 
 ## Repository contents
@@ -238,14 +238,14 @@ Every retained statistical fit is also checked for numerical convergence. The no
 
 ## Scope and limitations
 
-- Monthly spot-price averages are used instead of a traded forward curve, so the valuation is not risk-neutral.
-- The level model is selected for forecast performance despite the unit-root evidence, and its advantage is partly linked to the 2022 forecast year.
+- Monthly spot price averages are used instead of a traded forward curve, so the valuation is not risk neutral.
+- The level model is selected for forecast performance despite the unit root evidence, and its advantage is partly linked to the 2022 forecast year.
 - Future storage, HDD and CDD are EIA forecasts; uncertainty in those paths is omitted from the conditional model intervals.
 - The EIA price benchmark may contain broader judgement and related assumptions, so it is external rather than fully independent econometric evidence.
 - Seven development forecast years cover a limited set of market regimes.
 - The first development forecast year has only 54 monthly training observations, limiting confidence in longer seasonal relationships.
 - Future weather, supply and geopolitical shocks cannot be inferred from planned storage and weather paths alone.
-- The central log-price forecast is a conditional median rather than a bias-corrected expected price.
+- The central log price forecast is a conditional median rather than a bias-corrected expected price.
 - The redesign was informed by the full historical record, so 2024 and 2025 are later evaluations rather than untouched prospective tests.
 - Contract inputs are illustrative rather than quoted facility terms.
 - Monthly optimisation omits daily deliverability, bid-ask spreads, market impact, liquidity, credit and other operational detail.
