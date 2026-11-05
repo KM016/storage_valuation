@@ -7,7 +7,7 @@ from scipy.optimize import linprog
 
 def _check_prices(prices):
     """Check that the price curve is a complete monthly pandas Series."""
-    # Check that prices are stored in the expected format
+    # check that prices are stored in the expected format
     if not isinstance(prices, pd.Series):
         raise TypeError("prices must be a pandas Series")
     if prices.empty:
@@ -17,12 +17,12 @@ def _check_prices(prices):
     if not prices.index.is_monotonic_increasing or prices.index.has_duplicates:
         raise ValueError("price dates must be ordered and unique")
 
-    # Check that every month appears exactly once with no gaps
+    # check that every month appears exactly once with no gaps
     expected_index = pd.date_range(prices.index[0], periods=len(prices), freq="MS")
     if not prices.index.equals(expected_index):
         raise ValueError("prices must contain consecutive month-start dates")
 
-    # Check that all prices are valid positive numbers
+    # check that all prices are valid positive numbers
     price_values = prices.to_numpy(dtype=float)
     if not np.isfinite(price_values).all() or (price_values <= 0).any():
         raise ValueError("prices must be finite and positive")
@@ -44,7 +44,7 @@ def _check_contract_inputs(
     annual_discount_rate,
 ):
     """Check that the contract assumptions can produce a valid schedule."""
-    # Collect all numeric contract assumptions for validation
+    # collect all numeric contract assumptions for validation
     contract_inputs = np.asarray(
         [
             capacity,
@@ -62,11 +62,11 @@ def _check_contract_inputs(
         ],
         dtype=float,
     )
-    # Check that every contract assumption is a valid number
+    # check that every contract assumption is a valid number
     if not np.isfinite(contract_inputs).all():
         raise ValueError("contract inputs must be finite")
 
-    # Check the physical storage assumptions
+    # check the physical storage assumptions
     if capacity <= 0:
         raise ValueError("capacity must be positive")
     if max_injection < 0 or max_withdrawal < 0:
@@ -76,19 +76,19 @@ def _check_contract_inputs(
     if not 0 < withdrawal_efficiency <= 1:
         raise ValueError("withdrawal_efficiency must lie between zero and one")
 
-    # Check that costs and discounting assumptions are valid
+    # check that costs and discounting assumptions are valid
     if min(injection_cost, withdrawal_cost, holding_cost, monthly_contract_fee) < 0:
         raise ValueError("costs and fees cannot be negative")
     if annual_discount_rate <= -1:
         raise ValueError("annual_discount_rate must be greater than -1")
 
-    # Check that the starting and ending inventories fit inside the facility
+    # check that the starting and ending inventories fit inside the facility
     if not 0 <= initial_inventory <= capacity:
         raise ValueError("initial_inventory must lie within storage capacity")
     if not 0 <= final_inventory <= capacity:
         raise ValueError("final_inventory must lie within storage capacity")
 
-    # Check that the requested final inventory can physically be reached
+    # check that the requested final inventory can physically be reached
     maximum_inventory_increase = number_of_months * max_injection * injection_efficiency
     maximum_inventory_decrease = number_of_months * max_withdrawal / withdrawal_efficiency
     if final_inventory - initial_inventory > maximum_inventory_increase + 1e-9:
@@ -113,15 +113,15 @@ def optimise_storage_schedule(
     annual_discount_rate=0.05,
 ):
     """Find the highest-value monthly schedule for one forecast price curve."""
-    # Check the forecast prices before running the optimisation
+    # check the forecast prices before running the optimisation
     _check_prices(prices)
     number_of_months = len(prices)
 
-    # Finish with the same inventory level unless another target is supplied
+    # finish with the same inventory level unless another target is supplied
     if final_inventory is None:
         final_inventory = initial_inventory
 
-    # Check that the contract assumptions are valid
+    # check that the contract assumptions are valid
     _check_contract_inputs(
         number_of_months,
         capacity,
@@ -138,12 +138,12 @@ def optimise_storage_schedule(
         annual_discount_rate,
     )
 
-    # Convert prices to an array and discount each month's cash flow
+    # convert prices to an array and discount each months cash flow
     price_values = prices.to_numpy(dtype=float)
     month_numbers = np.arange(1, number_of_months + 1)
     discount_factors = (1 + annual_discount_rate) ** (-month_numbers / 12)
 
-    # Build the objective function for injection, withdrawal and inventory
+    # build the objective function for injection, withdrawal and inventory
     # linprog minimises, so sales revenue enters with a negative sign
     objective = np.concatenate(
         [
@@ -153,24 +153,24 @@ def optimise_storage_schedule(
         ]
     )
 
-    # Create the monthly inventory balance equations
+    # create the monthly inventory balance equations
     inventory_constraints = np.zeros((number_of_months, 3 * number_of_months))
     inventory_targets = np.zeros(number_of_months)
 
-    # Link each month's opening inventory, activity and closing inventory
+    # link each months opening inventory, activity and closing inventory
     for month in range(number_of_months):
         inventory_constraints[month, month] = -injection_efficiency
         inventory_constraints[month, number_of_months + month] = 1 / withdrawal_efficiency
         inventory_constraints[month, 2 * number_of_months + month] = 1
 
-        # The first month starts from the supplied initial inventory
+        # the first month starts from the supplied initial inventory
         if month == 0:
             inventory_targets[month] = initial_inventory
-        # Later months begin with the previous month's closing inventory
+        # later months begin with the previous months closing inventory
         else:
             inventory_constraints[month, 2 * number_of_months + month - 1] = -1
 
-    # Set the allowed range for injections, withdrawals and inventory
+    # set the allowed range for injections, withdrawals and inventory
     bounds = (
         [(0, max_injection)] * number_of_months
         + [(0, max_withdrawal)] * number_of_months
@@ -178,7 +178,7 @@ def optimise_storage_schedule(
         + [(final_inventory, final_inventory)]
     )
 
-    # Find the storage schedule with the highest discounted value
+    # find the storage schedule with the highest discounted value
     solution = linprog(
         objective,
         A_eq=inventory_constraints,
@@ -186,23 +186,23 @@ def optimise_storage_schedule(
         bounds=bounds,
         method="highs",
     )
-    # Stop if the optimiser cannot find a valid solution
+    # stop if the optimiser cannot find a valid solution
     if not solution.success:
         raise RuntimeError(f"storage optimisation failed: {solution.message}")
 
-    # Extract the optimal injection, withdrawal and inventory decisions
+    # extract the optimal injection, withdrawal and inventory decisions
     injection = solution.x[:number_of_months]
     withdrawal = solution.x[number_of_months : 2 * number_of_months]
     closing_inventory = solution.x[2 * number_of_months :]
 
-    # Remove tiny numerical solver values so the schedule is easier to read
+    # remove tiny numerical solver values so the schedule is easier to read
     injection[np.abs(injection) < 1e-7] = 0
     withdrawal[np.abs(withdrawal) < 1e-7] = 0
     closing_inventory[np.abs(closing_inventory) < 1e-7] = 0
-    # Calculate the opening inventory for each month
+    # calculate the opening inventory for each month
     opening_inventory = np.concatenate(([initial_inventory], closing_inventory[:-1]))
 
-    # Calculate the individual revenue and cost components
+    # calculate the individual revenue and cost components
     purchase_cost = price_values * injection
     sales_revenue = price_values * withdrawal
     injection_charge = injection_cost * injection
@@ -210,7 +210,7 @@ def optimise_storage_schedule(
     storage_charge = holding_cost * closing_inventory
     contract_fee = np.full(number_of_months, monthly_contract_fee)
 
-    # Calculate monthly operating and net cash flows
+    # calculate monthly operating and net cash flows
     operating_cash_flow = (
         sales_revenue
         - purchase_cost
@@ -220,7 +220,7 @@ def optimise_storage_schedule(
     )
     net_cash_flow = operating_cash_flow - contract_fee
 
-    # Store the full optimal monthly schedule in a DataFrame
+    # store the full optimal monthly schedule in a dataframe
     schedule = pd.DataFrame(
         {
             "Forecast price": price_values,
@@ -243,16 +243,16 @@ def optimise_storage_schedule(
     )
     schedule.index.name = "Month"
 
-    # Calculate the overall value of the optimal storage strategy
+    # calculate the overall value of the optimal storage strategy
     operating_value = np.sum(operating_cash_flow * discount_factors)
     contract_fee_value = np.sum(contract_fee * discount_factors)
     contract_npv = operating_value - contract_fee_value
-    # Count months where injection and withdrawal occur at the same time
+    # count months where injection and withdrawal occur at the same time
     simultaneous_months = int(((injection > 1e-7) & (withdrawal > 1e-7)).sum())
 
-    # Calculate the maximum inventory used by the strategy
+    # calculate the maximum inventory used by the strategy
     peak_inventory = max(initial_inventory, closing_inventory.max())
-    # Summarise the main valuation and storage results
+    # summarise the main valuation and storage results
     summary = pd.Series(
         {
             "Forecast operating value": operating_value,
@@ -273,21 +273,21 @@ def optimise_storage_schedule(
 
 def evaluate_frozen_schedule(schedule, realised_prices):
     """Evaluate an existing schedule without changing its decisions."""
-    # Check that the realised price curve is valid
+    # check that the realised price curve is valid
     _check_prices(realised_prices)
-    # The realised prices must cover exactly the same months as the schedule
+    # the realised prices must cover exactly the same months as the schedule
     if not schedule.index.equals(realised_prices.index):
         raise ValueError("realised prices must cover the same months as the schedule")
 
-    # Copy the original schedule so its decisions remain unchanged
+    # copy the original schedule so its decisions remain unchanged
     result = schedule.copy()
-    # Replace forecast prices with the prices that actually occurred
+    # replace forecast prices with the prices that actually occurred
     result["Realised price"] = realised_prices.to_numpy(dtype=float)
-    # Recalculate purchase costs and sales revenue using realised prices
+    # recalculate purchase costs and sales revenue using realised prices
     result["Realised purchase cost"] = result["Realised price"] * result["Injection"]
     result["Realised sales revenue"] = result["Realised price"] * result["Withdrawal"]
 
-    # Recalculate cash flow while keeping the original storage decisions fixed
+    # recalculate cash flow while keeping the original storage decisions fixed
     result["Realised net cash flow"] = (
         result["Realised sales revenue"]
         - result["Realised purchase cost"]
@@ -296,11 +296,11 @@ def evaluate_frozen_schedule(schedule, realised_prices):
         - result["Holding cost"]
         - result["Contract fee"]
     )
-    # Discount the realised monthly cash flows
+    # discount the realised monthly cash flows
     result["Realised discounted cash flow"] = (
         result["Realised net cash flow"] * result["Discount factor"]
     )
 
-    # Add the realised discounted cash flows to get the final realised NPV
+    # add the realised discounted cash flows to get the final realised npv
     realised_npv = result["Realised discounted cash flow"].sum()
     return result, realised_npv

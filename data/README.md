@@ -44,7 +44,7 @@ For a forecast covering August of year Y to July of year Y+1, the matching July 
 - Rows: 720, with 72 rows per vintage
 - SHA-256: `3184b0cd61b5cdb63138b46c38a3cbd7f17d12073f41168726f295e1daca041f`
 
-`eia_steo_vintage_manifest.csv` records the release date, coverage, original workbook URL and SHA-256 checksum for every source workbook. The archived workbooks are not stored in the repository because the extracted data and pinned checksums are sufficient to reproduce and verify the snapshot.
+The original workbooks are not included in the repository. Instead, the manifest records their source URLs and SHA-256 checksums, allowing the extracted dataset to be rebuilt and verified against the original files while they remain available from EIA.
 
 - Retrieved: 24 August 2026
 - Rows: 10, with one row per vintage
@@ -55,7 +55,7 @@ For a forecast covering August of year Y to July of year Y+1, the matching July 
 From the repository root, run:
 
 ```bash
-python extract_steo_vintages.py
+python scripts/extract_steo_vintages.py
 ```
 
 The script downloads every official workbook listed in the manifest, checks its SHA-256 checksum, locates each required row using the EIA series code and rebuilds `eia_steo_july_vintages.csv`. It also checks the date coverage, historical cutoff, row counts, duplicate keys and missing values before writing the file. The downloaded workbooks are held in a temporary directory and are removed when the extraction finishes.

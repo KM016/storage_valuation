@@ -12,12 +12,12 @@ import pandas as pd
 from openpyxl import load_workbook
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = PROJECT_ROOT / "data" / "eia_steo_vintage_manifest.csv"
 DEFAULT_OUTPUT = PROJECT_ROOT / "data" / "eia_steo_july_vintages.csv"
 
-# The first item gives the output column, followed by the workbook sheet and
-# the EIA series code. The code is used instead of a fixed row number because
+# the first item gives the output column, followed by the workbook sheet and
+# the eia series code. the code is used instead of a fixed row number because
 # some table layouts changed in 2024.
 SERIES = {
     "price": ("2tab", "NGHHUUS"),
@@ -86,7 +86,7 @@ def extract_workbook(path, manifest_row):
             freq="MS",
         )
 
-        # Monthly dates are stored from column C across row 11.
+        # monthly dates are stored from column c across row 11.
         raw_dates = next(
             dates_sheet.iter_rows(
                 min_row=11,
@@ -100,7 +100,7 @@ def extract_workbook(path, manifest_row):
         if not workbook_dates.equals(expected_dates):
             raise ValueError(f"date coverage does not match the manifest for {path.name}")
 
-        # Dates!D7 records the final historical or estimated month in the file.
+        # dates!d7 records the final historical or estimated month in the file.
         last_historical_month = parse_month(dates_sheet["D7"].value)
         if last_historical_month != manifest_row.last_historical_month:
             raise ValueError(

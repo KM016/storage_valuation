@@ -1,0 +1,37 @@
+year,model,transformation,realised_NPV,forecast_NPV
+2017,"ARIMA(1,0,0)",lognormal mean,0.0,0.0
+2017,"ARIMA(1,0,0)",lognormal median,0.0,0.0
+2017,ARIMAX + fundamentals,lognormal mean,-39095.3587116141,2475.283094849321
+2017,ARIMAX + fundamentals,lognormal median,-39095.3587116141,2134.418662958313
+2018,"ARIMA(1,0,0)",lognormal mean,0.0,0.0
+2018,"ARIMA(1,0,0)",lognormal median,0.0,0.0
+2018,ARIMAX + fundamentals,lognormal mean,-180607.47411159764,18215.505752546713
+2018,ARIMAX + fundamentals,lognormal median,-180607.47411159764,16041.121312335017
+2019,"ARIMA(1,0,0)",lognormal mean,-148245.68457858643,7337.772406355711
+2019,"ARIMA(1,0,0)",lognormal median,0.0,0.0
+2019,ARIMAX + fundamentals,lognormal mean,-319625.75957454694,95935.51587266708
+2019,ARIMAX + fundamentals,lognormal median,-319625.75957454694,86400.36667220108
+2020,"ARIMA(1,0,0)",lognormal mean,413041.63962401974,119630.42527077132
+2020,"ARIMA(1,0,0)",lognormal median,413041.63962401974,86783.56819479802
+2020,ARIMAX + fundamentals,lognormal mean,837884.2126285278,181815.42564567894
+2020,ARIMAX + fundamentals,lognormal median,905091.0896597407,163515.885949897
+2021,"ARIMA(1,0,0)",lognormal mean,0.0,0.0
+2021,"ARIMA(1,0,0)",lognormal median,0.0,0.0
+2021,ARIMAX + fundamentals,lognormal mean,-658863.0545762256,226695.40229931846
+2021,ARIMAX + fundamentals,lognormal median,-551609.7324373759,210781.096446892
+2022,"ARIMA(1,0,0)",lognormal mean,0.0,0.0
+2022,"ARIMA(1,0,0)",lognormal median,0.0,0.0
+2022,ARIMAX + fundamentals,lognormal mean,0.0,0.0
+2022,ARIMAX + fundamentals,lognormal median,0.0,0.0
+2023,"ARIMA(1,0,0)",lognormal mean,-494289.04377942125,87593.30760725762
+2023,"ARIMA(1,0,0)",lognormal median,-473858.88749470573,39202.45484775363
+2023,ARIMAX + fundamentals,lognormal mean,-25306.494995719113,69036.74177056161
+2023,ARIMAX + fundamentals,lognormal median,-25306.494995719113,54571.6071047287
+2024,"ARIMA(1,0,0)",lognormal mean,150232.59565729543,996.715648889076
+2024,"ARIMA(1,0,0)",lognormal median,0.0,0.0
+2024,ARIMAX + fundamentals,lognormal mean,-147347.72991235612,47948.594369425555
+2024,ARIMAX + fundamentals,lognormal median,-92140.26421571581,44620.659711592074
+2025,"ARIMA(1,0,0)",lognormal mean,0.0,0.0
+2025,"ARIMA(1,0,0)",lognormal median,0.0,0.0
+2025,ARIMAX + fundamentals,lognormal mean,-24433.700663360534,32562.753929601517
+2025,ARIMAX + fundamentals,lognormal median,-24433.700663360534,30126.37951855152
