@@ -2,7 +2,7 @@
 
 A quantitative research project connecting natural gas price forecasts with physical storage decisions, comparing plans set in July against decisions updated each month.
 
-> Personal Project
+> Personal Project\
 > Date: 08/2026
 
 ## Project overview
